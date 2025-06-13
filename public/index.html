@@ -137,58 +137,60 @@
   </div>
 
   <script>
-    const chatContainer = document.getElementById("chat-container");
+  const chatContainer = document.getElementById("chat-container");
 
-    function appendMessage(content, sender) {
-      const wrapper = document.createElement("div");
-      wrapper.className = `message ${sender}`;
+  function appendMessage(content, sender) {
+    const wrapper = document.createElement("div");
+    wrapper.className = `message ${sender}`;
 
-      const avatar = document.createElement("img");
-      avatar.className = "avatar";
-      avatar.src = sender === "user"
-        ? "https://api.iconify.design/mdi/account-circle.svg?color=white"
-        : "https://api.iconify.design/ri/robot-2-fill.svg?color=white";
+    const avatar = document.createElement("img");
+    avatar.className = "avatar";
+    avatar.src = sender === "user"
+      ? "https://api.iconify.design/mdi/account-circle.svg?color=white"
+      : "https://api.iconify.design/ri/robot-2-fill.svg?color=white";
 
-      const text = document.createElement("div");
-      text.textContent = content;
+    const text = document.createElement("div");
+    text.textContent = content;
 
-      wrapper.appendChild(avatar);
-      wrapper.appendChild(text);
-      chatContainer.appendChild(wrapper);
-      chatContainer.scrollTop = chatContainer.scrollHeight;
+    wrapper.appendChild(avatar);
+    wrapper.appendChild(text);
+    chatContainer.appendChild(wrapper);
+    chatContainer.scrollTop = chatContainer.scrollHeight;
+  }
+
+  async function sendMessage() {
+    const input = document.getElementById("userInput");
+    const msg = input.value.trim();
+    if (!msg) return;
+
+    appendMessage(msg, "user");
+    input.value = "";
+
+    appendMessage("Typing...", "bot");
+
+    try {
+      const res = await fetch("https://chaitanyaratnaparkhi-github-io.onrender.com/chat", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ message: msg })
+      });
+
+      const data = await res.json();
+      document.querySelector(".bot:last-child").remove();
+      appendMessage(data.reply, "bot");
+
+    } catch (err) {
+      document.querySelector(".bot:last-child").remove();
+      appendMessage("⚠ Failed to connect to the bot.", "bot");
+      console.error("Error:", err);
     }
+  }
 
-    async function sendMessage() {
-      const input = document.getElementById("userInput");
-      const msg = input.value.trim();
-      if (!msg) return;
-
-      appendMessage(msg, "user");
-      input.value = "";
-
-      appendMessage("Typing...", "bot");
-
-      try {
-        const res = await fetch("https://ai-chatbot.onrender.com/chat", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ message: msg }),
-        });
-        const data = await res.json();
-
-                document.querySelector(".bot:last-child").remove(); // remove "Typing..."
-
-        appendMessage(data.reply, "bot");
-      } catch (err) {
-        document.querySelector(".bot:last-child").remove(); // remove "Typing..." in case of error
-        appendMessage("Failed to connect to the bot.", "bot");
-        console.error("Error:", err);
-      }
-    }
-
-    function toggleTheme() {
-      document.body.classList.toggle("light");
-    }
-  </script>
+  function toggleTheme() {
+    document.body.classList.toggle("light");
+  }
+</script>
 </body>
 </html>
