@@ -1,20 +1,28 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Chatbot | OpenRouter AI</title>
+  <meta charset="UTF-8" />
+  <title>AI Chatbot Assistant</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+
   <style>
     * { box-sizing: border-box; }
     body {
-      font-family: 'Segoe UI', sans-serif;
-      background: #1f1f1f;
-      color: #f1f1f1;
+      font-family: 'Poppins', sans-serif;
       margin: 0;
       padding: 0;
+      height: 100vh;
       display: flex;
       flex-direction: column;
-      height: 100vh;
+      background-color: #1f1f1f;
+      color: #fff;
+      transition: background 0.3s, color 0.3s;
+    }
+
+    body.light {
+      background-color: #f1f1f1;
+      color: #111;
     }
 
     #chat-container {
@@ -23,22 +31,24 @@
       overflow-y: auto;
       display: flex;
       flex-direction: column;
-      gap: 10px;
+      gap: 12px;
     }
 
     .message {
-      max-width: 70%;
-      padding: 12px 15px;
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      max-width: 80%;
+      padding: 12px 14px;
       border-radius: 16px;
       font-size: 15px;
       line-height: 1.4;
-      position: relative;
       word-wrap: break-word;
     }
 
     .user {
       align-self: flex-end;
-      background: #4b8df8;
+      background: linear-gradient(145deg, #4b8df8, #3a7be0);
       color: white;
       border-bottom-right-radius: 0;
     }
@@ -46,8 +56,13 @@
     .bot {
       align-self: flex-start;
       background: #2e2e2e;
-      color: #d1d1d1;
+      color: #eaeaea;
       border-bottom-left-radius: 0;
+    }
+
+    body.light .bot {
+      background: #e3e3e3;
+      color: #222;
     }
 
     #input-container {
@@ -57,103 +72,108 @@
       border-top: 1px solid #333;
     }
 
+    body.light #input-container {
+      background: #f7f7f7;
+      border-top: 1px solid #ccc;
+    }
+
     #userInput {
       flex: 1;
       padding: 10px 14px;
       border: none;
       border-radius: 20px;
       font-size: 15px;
-      outline: none;
       background: #2a2a2a;
       color: #fff;
     }
 
+    body.light #userInput {
+      background: #e0e0e0;
+      color: #000;
+    }
+
     button {
       margin-left: 10px;
-      background: #4b8df8;
+      background: linear-gradient(to right, #4b8df8, #3a7be0);
       border: none;
       border-radius: 20px;
       color: white;
       padding: 10px 20px;
       font-size: 15px;
       cursor: pointer;
-      transition: background 0.3s;
     }
 
     button:hover {
-      background: #3a7be0;
+      background: linear-gradient(to right, #3a7be0, #2f6bd6);
     }
 
-    .typing {
-      font-style: italic;
-      font-size: 14px;
-      opacity: 0.6;
+    .avatar {
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    .dark-toggle {
+      position: absolute;
+      top: 10px;
+      right: 15px;
+      cursor: pointer;
+      background: none;
+      border: none;
+      color: inherit;
+      font-size: 20px;
     }
   </style>
 </head>
+
 <body>
+  <button class="dark-toggle" onclick="toggleTheme()">🌓</button>
   <div id="chat-container"></div>
 
   <div id="input-container">
-    <input id="userInput" type="text" placeholder="Ask me anything..." autocomplete="off" />
+    <input id="userInput" type="text" placeholder="Ask something..." />
     <button onclick="sendMessage()">Send</button>
   </div>
 
   <script>
-    const chatContainer = document.getElementById('chat-container');
+    const chatContainer = document.getElementById("chat-container");
 
     function appendMessage(content, sender) {
-      const msgDiv = document.createElement('div');
-      msgDiv.className = `message ${sender}`;
-      msgDiv.textContent = content;
-      chatContainer.appendChild(msgDiv);
-      chatContainer.scrollTop = chatContainer.scrollHeight;
-    }
+      const wrapper = document.createElement("div");
+      wrapper.className = `message ${sender}`;
 
-    function showTyping() {
-      const typing = document.createElement('div');
-      typing.id = 'typing-indicator';
-      typing.className = 'message bot typing';
-      typing.textContent = 'Bot is typing...';
-      chatContainer.appendChild(typing);
-      chatContainer.scrollTop = chatContainer.scrollHeight;
-    }
+      const avatar = document.createElement("img");
+      avatar.className = "avatar";
+      avatar.src = sender === "user"
+        ? "https://api.iconify.design/mdi/account-circle.svg?color=white"
+        : "https://api.iconify.design/ri/robot-2-fill.svg?color=white";
 
-    function removeTyping() {
-      const typing = document.getElementById('typing-indicator');
-      if (typing) typing.remove();
+      const text = document.createElement("div");
+      text.textContent = content;
+
+      wrapper.appendChild(avatar);
+      wrapper.appendChild(text);
+      chatContainer.appendChild(wrapper);
+      chatContainer.scrollTop = chatContainer.scrollHeight;
     }
 
     async function sendMessage() {
       const input = document.getElementById("userInput");
-      const message = input.value.trim();
-      if (!message) return;
+      const msg = input.value.trim();
+      if (!msg) return;
 
-      appendMessage(message, 'user');
+      appendMessage(msg, "user");
       input.value = "";
 
-      showTyping();
+      appendMessage("Typing...", "bot");
 
       try {
-        const response = await fetch("http://localhost:5000/chat", {
+        const res = await fetch("/chat", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ message }),
+          body: JSON.stringify({ message: msg }),
         });
+        const data = await res.json();
 
-        const data = await response.json();
-        removeTyping();
-        appendMessage(data.reply || "No response received.", 'bot');
-      } catch (err) {
-        removeTyping();
-        appendMessage("⚠ Error contacting bot: " + err.message, 'bot');
-      }
-    }
-
-    // Submit with Enter key
-    document.getElementById("userInput").addEventListener("keypress", function (e) {
-      if (e.key === "Enter") sendMessage();
-    });
-  </script>
-</body>
-</html>
+        document.querySelector(".bot:last-child").remove(); // remove "Typ
