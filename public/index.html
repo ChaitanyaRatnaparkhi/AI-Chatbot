@@ -176,4 +176,19 @@
         });
         const data = await res.json();
 
-        document.querySelector(".bot:last-child").remove(); // remove "Typ
+                document.querySelector(".bot:last-child").remove(); // remove "Typing..."
+
+        appendMessage(data.reply, "bot");
+      } catch (err) {
+        document.querySelector(".bot:last-child").remove(); // remove "Typing..." in case of error
+        appendMessage("Failed to connect to the bot.", "bot");
+        console.error("Error:", err);
+      }
+    }
+
+    function toggleTheme() {
+      document.body.classList.toggle("light");
+    }
+  </script>
+</body>
+</html>
