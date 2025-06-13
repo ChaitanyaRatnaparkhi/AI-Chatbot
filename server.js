@@ -41,13 +41,17 @@ app.post("/chat", async (req, res) => {
     );
 
     res.json({ reply: response.data.choices[0].message.content });
+
   } catch (err) {
-    console.error("Error:", err.message);
+    console.error("Error status:", err.response?.status);
+    console.error("Error data:", err.response?.data);
+    console.error("Error headers:", err.response?.headers);
     res
       .status(500)
       .json({ reply: "Oops! Something went wrong with OpenRouter." });
   }
 });
+
 
 // ✅ Use dynamic port for Render, fallback to 5000 locally
 const PORT = process.env.PORT || 5000;
