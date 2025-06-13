@@ -7,7 +7,11 @@ const path = require("path");
 dotenv.config();
 
 const app = express();
-app.use(cors());
+app.use(
+  cors({
+    origin: "https://chaitanyaratnaparkhi-github-io.onrender.com",
+  })
+);
 app.use(express.json());
 
 // ✅ Serve static files from the public folder
@@ -41,7 +45,9 @@ app.post("/chat", async (req, res) => {
     res.json({ reply: response.data.choices[0].message.content });
   } catch (err) {
     console.error("Error:", err.message);
-    res.status(500).json({ reply: "Oops! Something went wrong with OpenRouter." });
+    res
+      .status(500)
+      .json({ reply: "Oops! Something went wrong with OpenRouter." });
   }
 });
 
