@@ -7,11 +7,9 @@ const path = require("path");
 dotenv.config();
 
 const app = express();
-app.use(
-  cors({
-    origin: "https://chaitanyaratnaparkhi-github-io.onrender.com",
-  })
-);
+app.use(cors({
+  origin: "https://chaitanyaratnaparkhi.github.io"
+}));
 app.use(express.json());
 
 // ✅ Serve static files from the public folder
