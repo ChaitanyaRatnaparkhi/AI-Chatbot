@@ -10,10 +10,10 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-// Serve static files from 'public'
+// ✅ Serve static files from the public folder
 app.use(express.static(path.join(__dirname, "public")));
 
-// Serve index.html on root
+// ✅ Serve index.html on root path
 app.get("/", (req, res) => {
   res.sendFile(path.join(__dirname, "public", "index.html"));
 });
@@ -27,13 +27,12 @@ app.post("/chat", async (req, res) => {
     const response = await axios.post(
       "https://openrouter.ai/api/v1/chat/completions",
       {
-        model: "openai/gpt-3.5-turbo", // or try 'mistralai/mistral-7b-instruct'
+        model: "openai/gpt-3.5-turbo",
         messages: [{ role: "user", content: userMessage }],
       },
       {
         headers: {
           Authorization: `Bearer ${API_KEY}`,
-          "HTTP-Referer": "https://YOUR_RENDER_URL", // Replace or remove if not needed
           "Content-Type": "application/json",
         },
       }
@@ -46,6 +45,6 @@ app.post("/chat", async (req, res) => {
   }
 });
 
-// Use Render's PORT environment variable if available
+// ✅ Use dynamic port for Render, fallback to 5000 locally
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
