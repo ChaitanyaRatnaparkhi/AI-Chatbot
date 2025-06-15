@@ -7,9 +7,11 @@ const path = require("path");
 dotenv.config();
 
 const app = express();
-app.use(cors({
-  origin: "https://chaitanyaratnaparkhi.github.io"
-}));
+app.use(
+  cors({
+    origin: "https://chaitanyaratnaparkhi.github.io",
+  })
+);
 app.use(express.json());
 
 // ✅ Serve static files from the public folder
@@ -30,18 +32,25 @@ app.post("/chat", async (req, res) => {
       "https://openrouter.ai/api/v1/chat/completions",
       {
         model: "openai/gpt-3.5-turbo",
-        messages: [{ role: "user", content: userMessage }],
+        messages: [
+          {
+            role: "system",
+            content: `You are a helpful personal assistant chatbot for Chaitanya Ratnaparkhi's portfolio website.
+You know everything about Chaitanya's background, skills, education, and experience. 
+If users ask about Chaitanya's work, interests, resume, or contact details, respond clearly and professionally.`,
+          },
+          { role: "user", content: userMessage },
+        ],
       },
       {
         headers: {
-          Authorization: `Bearer ${API_KEY}`,
+          Authorization: `Token ${API_KEY}`,
           "Content-Type": "application/json",
         },
       }
     );
 
     res.json({ reply: response.data.choices[0].message.content });
-
   } catch (err) {
     console.error("Error status:", err.response?.status);
     console.error("Error data:", err.response?.data);
@@ -51,7 +60,6 @@ app.post("/chat", async (req, res) => {
       .json({ reply: "Oops! Something went wrong with OpenRouter." });
   }
 });
-
 
 // ✅ Use dynamic port for Render, fallback to 5000 locally
 const PORT = process.env.PORT || 5000;
