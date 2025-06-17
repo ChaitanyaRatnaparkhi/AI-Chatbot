@@ -117,15 +117,24 @@
 
     .dark-toggle {
       position: fixed;
-      top: 12px;
-      right: 16px;
-      z-index: 999;
-      background: none;
+      top: 20px;
+      right: 30px;
+      z-index: 50;
+      background: #333;
+      color: #fff;
       border: none;
-      color: inherit;
       font-size: 20px;
+      padding: 8px 10px;
+      border-radius: 50%;
       cursor: pointer;
+      transition: background 0.3s;
     }
+
+body.light .dark-toggle {
+  background: #ddd;
+  color: #000;
+}
+
 
     @media (max-width: 600px) {
       #chat-container {
@@ -217,12 +226,18 @@
     function toggleTheme() {
       document.body.classList.toggle("light");
     }
-    document.getElementById("userInput").addEventListener("keydown", function (e) {
-  if (e.key === "Enter" && !e.shiftKey) {
-    e.preventDefault();
-    sendMessage();
-  }
+
+    document.addEventListener("DOMContentLoaded", () => {
+      appendMessage("Hello! How can I assist you today?", "bot");
+
+      document.getElementById("userInput").addEventListener("keydown", function (e) {
+        if (e.key === "Enter" && !e.shiftKey) {
+          e.preventDefault();
+          sendMessage();
+        }
+  });
 });
+
   </script>
 </body>
 </html>
