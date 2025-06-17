@@ -44,6 +44,7 @@
       font-size: 15px;
       line-height: 1.4;
       word-wrap: break-word;
+      word-break: break-word;
     }
 
     .user {
@@ -174,6 +175,7 @@
         : "https://api.iconify.design/ri/robot-2-fill.svg?color=white";
 
       const text = document.createElement("div");
+      text.style.flex = "1";
       text.textContent = content;
 
       wrapper.appendChild(avatar);
@@ -215,6 +217,12 @@
     function toggleTheme() {
       document.body.classList.toggle("light");
     }
+    document.getElementById("userInput").addEventListener("keydown", function (e) {
+  if (e.key === "Enter" && !e.shiftKey) {
+    e.preventDefault();
+    sendMessage();
+  }
+});
   </script>
 </body>
 </html>
