@@ -5,9 +5,9 @@
   <title>AI Chatbot Assistant</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+
   <style>
     * { box-sizing: border-box; }
-
     body {
       font-family: 'Poppins', sans-serif;
       margin: 0;
@@ -23,32 +23,6 @@
     body.light {
       background-color: #f1f1f1;
       color: #111;
-    }
-
-    #chatbot-wrapper {
-      position: relative;
-      width: 100%;
-      height: 100%;
-    }
-
-    .dark-toggle {
-      position: absolute;
-      top: 10px;
-      right: 10px;
-      z-index: 10;
-      background: #333;
-      color: #fff;
-      border: none;
-      font-size: 18px;
-      padding: 6px 10px;
-      border-radius: 50%;
-      cursor: pointer;
-      transition: background 0.3s;
-    }
-
-    body.light .dark-toggle {
-      background: #ddd;
-      color: #000;
     }
 
     #chat-container {
@@ -141,6 +115,27 @@
       flex-shrink: 0;
     }
 
+    .dark-toggle {
+      position: fixed;
+      bottom: 90px;
+      right: 100px;
+      z-index: 999;
+      background: #333;
+      color: #fff;
+      border: none;
+      font-size: 20px;
+      padding: 10px;
+      border-radius: 50%;
+      cursor: pointer;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+      transition: background 0.3s;
+    }
+
+    body.light .dark-toggle {
+      background: #e0e0e0;
+      color: #111;
+    }
+
     @media (max-width: 600px) {
       #chat-container {
         padding: 12px;
@@ -162,21 +157,24 @@
         font-size: 14px;
         margin-left: 0;
       }
+
+      .dark-toggle {
+        bottom: 130px;
+        right: 20px;
+      }
     }
   </style>
 </head>
 
 <body>
-  <div id="chatbot-wrapper">
-    <button class="dark-toggle" onclick="toggleTheme()">🌓</button>
+  <div id="chat-container"></div>
 
-    <div id="chat-container"></div>
-
-    <div id="input-container">
-      <input id="userInput" type="text" placeholder="Ask something..." />
-      <button onclick="sendMessage()">Send</button>
-    </div>
+  <div id="input-container">
+    <input id="userInput" type="text" placeholder="Ask something..." />
+    <button onclick="sendMessage()">Send</button>
   </div>
+
+  <button class="dark-toggle" onclick="toggleTheme()">🌓</button>
 
   <script>
     const chatContainer = document.getElementById("chat-container");
@@ -214,7 +212,9 @@
       try {
         const res = await fetch("https://chaitanyaratnaparkhi-github-io.onrender.com/chat", {
           method: "POST",
-          headers: { "Content-Type": "application/json" },
+          headers: {
+            "Content-Type": "application/json"
+          },
           body: JSON.stringify({ message: msg })
         });
 
@@ -233,6 +233,7 @@
       document.body.classList.toggle("light");
     }
 
+    // Support Enter to send
     document.getElementById("userInput").addEventListener("keydown", function (e) {
       if (e.key === "Enter" && !e.shiftKey) {
         e.preventDefault();
@@ -240,7 +241,10 @@
       }
     });
 
-    appendMessage("Hello! How can I assist you today?", "bot");
+    // Welcome message
+    window.onload = () => {
+      appendMessage("Hello! How can I assist you today?", "bot");
+    };
   </script>
 </body>
 </html>
