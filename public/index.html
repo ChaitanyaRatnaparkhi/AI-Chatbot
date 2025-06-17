@@ -3,11 +3,12 @@
 <head>
   <meta charset="UTF-8" />
   <title>AI Chatbot Assistant</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
-
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet" />
   <style>
-    * { box-sizing: border-box; }
+    * {
+      box-sizing: border-box;
+    }
     body {
       font-family: 'Poppins', sans-serif;
       margin: 0;
@@ -19,12 +20,10 @@
       color: #fff;
       transition: background 0.3s, color 0.3s;
     }
-
     body.light {
       background-color: #f1f1f1;
       color: #111;
     }
-
     #chat-container {
       flex: 1;
       padding: 20px;
@@ -33,7 +32,6 @@
       flex-direction: column;
       gap: 12px;
     }
-
     .message {
       display: flex;
       align-items: flex-start;
@@ -46,38 +44,32 @@
       word-wrap: break-word;
       word-break: break-word;
     }
-
     .user {
       align-self: flex-end;
       background: linear-gradient(145deg, #4b8df8, #3a7be0);
       color: white;
       border-bottom-right-radius: 0;
     }
-
     .bot {
       align-self: flex-start;
       background: #2e2e2e;
       color: #eaeaea;
       border-bottom-left-radius: 0;
     }
-
     body.light .bot {
       background: #e3e3e3;
       color: #222;
     }
-
     #input-container {
       display: flex;
       padding: 15px;
       background: #121212;
       border-top: 1px solid #333;
     }
-
     body.light #input-container {
       background: #f7f7f7;
       border-top: 1px solid #ccc;
     }
-
     #userInput {
       flex: 1;
       padding: 10px 14px;
@@ -87,12 +79,10 @@
       background: #2a2a2a;
       color: #fff;
     }
-
     body.light #userInput {
       background: #e0e0e0;
       color: #000;
     }
-
     button {
       margin-left: 10px;
       background: linear-gradient(to right, #4b8df8, #3a7be0);
@@ -103,18 +93,15 @@
       font-size: 15px;
       cursor: pointer;
     }
-
     button:hover {
       background: linear-gradient(to right, #3a7be0, #2f6bd6);
     }
-
     .avatar {
       width: 30px;
       height: 30px;
       border-radius: 50%;
       flex-shrink: 0;
     }
-
     .dark-toggle {
       position: fixed;
       bottom: 90px;
@@ -123,59 +110,54 @@
       background: #333;
       color: #fff;
       border: none;
-      font-size: 20px;
-      padding: 10px;
+      font-size: 18px;
+      width: 40px;
+      height: 40px;
       border-radius: 50%;
       cursor: pointer;
-      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
       transition: background 0.3s;
     }
-
     body.light .dark-toggle {
       background: #e0e0e0;
       color: #111;
     }
-
     @media (max-width: 600px) {
       #chat-container {
         padding: 12px;
       }
-
       #input-container {
         flex-direction: column;
         gap: 10px;
         padding: 12px;
       }
-
       #userInput {
         width: 100%;
         font-size: 14px;
       }
-
       button {
         width: 100%;
         font-size: 14px;
         margin-left: 0;
       }
-
       .dark-toggle {
-        bottom: 130px;
+        bottom: 120px;
         right: 20px;
       }
     }
   </style>
 </head>
-
 <body>
+  <button class="dark-toggle" onclick="toggleTheme()">🌓</button>
   <div id="chat-container"></div>
-
   <div id="input-container">
     <input id="userInput" type="text" placeholder="Ask something..." />
     <button onclick="sendMessage()">Send</button>
   </div>
-
-  <button class="dark-toggle" onclick="toggleTheme()">🌓</button>
-
   <script>
     const chatContainer = document.getElementById("chat-container");
 
@@ -206,22 +188,18 @@
 
       appendMessage(msg, "user");
       input.value = "";
-
       appendMessage("Typing...", "bot");
 
       try {
         const res = await fetch("https://chaitanyaratnaparkhi-github-io.onrender.com/chat", {
           method: "POST",
-          headers: {
-            "Content-Type": "application/json"
-          },
-          body: JSON.stringify({ message: msg })
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ message: msg }),
         });
 
         const data = await res.json();
         document.querySelector(".bot:last-child").remove();
         appendMessage(data.reply, "bot");
-
       } catch (err) {
         document.querySelector(".bot:last-child").remove();
         appendMessage("⚠ Failed to connect to the bot.", "bot");
@@ -233,7 +211,7 @@
       document.body.classList.toggle("light");
     }
 
-    // Support Enter to send
+    // Enable Enter key for sending
     document.getElementById("userInput").addEventListener("keydown", function (e) {
       if (e.key === "Enter" && !e.shiftKey) {
         e.preventDefault();
@@ -241,10 +219,10 @@
       }
     });
 
-    // Welcome message
-    window.onload = () => {
+    // Initial welcome message
+    window.addEventListener("DOMContentLoaded", () => {
       appendMessage("Hello! How can I assist you today?", "bot");
-    };
+    });
   </script>
 </body>
 </html>
