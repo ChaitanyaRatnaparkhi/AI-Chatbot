@@ -7,11 +7,12 @@ const path = require("path");
 dotenv.config();
 
 const app = express();
-app.use(
-  cors({
-    origin: "https://chaitanyaratnaparkhi.github.io",
-  })
-);
+
+// ✅ CORS: Allow your GitHub Pages portfolio domain
+app.use(cors({
+  origin: "https://chaitanyaratnaparkhi.github.io",
+}));
+
 app.use(express.json());
 
 // ✅ Serve static files from the public folder
@@ -31,7 +32,7 @@ app.post("/chat", async (req, res) => {
     const response = await axios.post(
       "https://openrouter.ai/api/v1/chat/completions",
       {
-        model: "openai/gpt-3.5-turbo",
+        model: "openrouter/openai/gpt-3.5-turbo", // 🔧 Replace with exact model slug available to your account
         messages: [
           {
             role: "system",
@@ -46,7 +47,7 @@ Respond in a professional, friendly, and concise manner.`,
       },
       {
         headers: {
-          Authorization: `Token ${API_KEY}`,
+          Authorization: `Bearer ${API_KEY}`, // ✅ Corrected here
           "Content-Type": "application/json",
         },
       }
