@@ -32,7 +32,7 @@ app.post("/chat", async (req, res) => {
     const response = await axios.post(
       "https://openrouter.ai/api/v1/chat/completions",
       {
-        model: "openai/gpt-3.5-turbo-16k", // ✅ Updated to Turbo 16k
+        model: "openai/gpt-3.5-turbo-0613", // ✅ Updated to Turbo 16k
         messages: [
           {
             role: "system",
